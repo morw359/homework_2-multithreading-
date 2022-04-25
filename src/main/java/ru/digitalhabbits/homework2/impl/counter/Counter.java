@@ -1,17 +1,24 @@
-package ru.digitalhabbits.homework2.impl;
+package ru.digitalhabbits.homework2.impl.counter;
 
 import ru.digitalhabbits.homework2.ICounter;
+import ru.digitalhabbits.homework2.impl.ForkCounter;
 
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class Counter implements ICounter {
-    private static final int countFork = 10;
-    private final BlockingQueue<Map<Character, Long>> countResult;
+    private final int countFork;
+    final BlockingQueue<Map<Character, Long>> countResult;
 
     public Counter() {
         this.countResult = new LinkedBlockingQueue<>();
+        this.countFork = 10;
+    }
+
+    public Counter(int countFork) {
+        this.countResult = new LinkedBlockingQueue<>();
+        this.countFork = countFork;
     }
 
     public List<Runnable> createTasks(String lines) {

@@ -23,6 +23,9 @@ public class MergerRunner extends Thread implements IMergeRunner {
         try {
             Map<Character, Long> finalCount = new HashMap<>();
             Map<Character, Long> singleCountResult;
+            /**
+             * берем, пока не натыкаемся на терминальный null
+             */
             while ((singleCountResult = counter.take()) != null) {
                 finalCount = merge(finalCount, singleCountResult);
             }

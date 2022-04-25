@@ -18,6 +18,9 @@ public class FileReaderBatchIterator implements IFileBatchReader {
     private BufferedReader reader;
     private final Charset charset;
 
+    /**
+     * @param batchSize - количество символов читаемых за раз
+     */
     public FileReaderBatchIterator(File file, int batchSize, Charset charset) {
         this.file = file;
         this.batchSize = batchSize;

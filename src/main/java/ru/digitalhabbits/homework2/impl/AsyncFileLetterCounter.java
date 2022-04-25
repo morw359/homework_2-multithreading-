@@ -41,6 +41,7 @@ public class AsyncFileLetterCounter implements FileLetterCounter {
         ExecutorService counterWorkers = Executors.newFixedThreadPool(COUNTERS_NUMBER);
         ICounter counter = counterCreator.counter();
         try (IFileBatchReader fileReader = readerFactory.reader(input, LINES_NUMBER, DEFAULT_FILE_CHARSET)) {
+            //будет складывать суммы по отдельным кускам файла в отдельном потоке
             IMergeRunner merger = mergerCreator.mergerRunner(counter);
             merger.start();
             String largeString;
@@ -52,8 +53,11 @@ public class AsyncFileLetterCounter implements FileLetterCounter {
                         .map(counterWorkers::submit)
                         .collect(Collectors.toList()));
             }
+            //дожидаемся пока counter точно посчитает все отдельные куски
             for (Future<?> countTask : countTasks) countTask.get();
+            //можем давать сигнал counter что инпута больше не будет
             counter.end();
+            //дожидаемся merger
             merger.join();
             return merger.getFinalCount();
         } catch (Exception e) {
