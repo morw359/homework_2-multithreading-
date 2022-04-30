@@ -45,7 +45,7 @@ public class AsyncFileLetterCounter implements FileLetterCounter {
             String largeString;
             while ((largeString = fileReader.readBatch()) != null) {
                 List<Runnable> tasks = counter.createTasks(largeString);
-                tasks.forEach(counterWorkers::submit);
+                tasks.forEach(counterWorkers::execute);
             }
             //дожидаемся пока counter точно посчитает все отдельные куски
             counterWorkers.shutdown();
