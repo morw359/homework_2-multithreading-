@@ -11,11 +11,6 @@ public class Counter implements ICounter {
     private final int countFork;
     final BlockingQueue<Map<Character, Long>> countResult;
 
-    public Counter() {
-        this.countResult = new LinkedBlockingQueue<>();
-        this.countFork = 10;
-    }
-
     public Counter(int countFork) {
         this.countResult = new LinkedBlockingQueue<>();
         this.countFork = countFork;

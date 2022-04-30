@@ -41,7 +41,7 @@ public class MergerRunnerTests {
     //мб есть какое-нибудь ограничение на время теста на такие случаи, чтобы не висели при багах
     @Test
     void testWithCounter() throws InterruptedException {
-        Counter c = new Counter();
+        Counter c = new Counter(1);
         MergerRunner merger = new MergerRunner(c);
         Map<Character, Long> m1 = new HashMap<>();
         m1.put('a', 1L);
