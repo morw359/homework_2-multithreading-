@@ -1,7 +1,5 @@
 package ru.digitalhabbits.homework2.impl;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import ru.digitalhabbits.homework2.IFileBatchReader;
 import ru.digitalhabbits.homework2.util.ExceptionUtils;
 
@@ -12,7 +10,6 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 
 public class FileReaderBatchIterator implements IFileBatchReader {
-    private final Logger log = LoggerFactory.getLogger(getClass());
     private final File file;
     private final int batchSize;
     private BufferedReader reader;
@@ -49,7 +46,7 @@ public class FileReaderBatchIterator implements IFileBatchReader {
             try {
                 reader.close();
             } catch (IOException e) {
-                log.error(ExceptionUtils.getStackTrace(e));
+                System.out.println(ExceptionUtils.getStackTrace(e));
             }
         }
     }
