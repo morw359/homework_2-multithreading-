@@ -13,14 +13,13 @@ import java.io.File;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 public class AsyncFileLetterCounter implements FileLetterCounter {
-    private static final int SYMBOL_NUMBER = 100;
+    private static final int SYMBOL_NUMBER = 1584;
     private static final int COUNTERS_NUMBER = Runtime.getRuntime().availableProcessors() - 1;
     private static final Charset DEFAULT_FILE_CHARSET = StandardCharsets.UTF_8;
 
@@ -37,15 +36,14 @@ public class AsyncFileLetterCounter implements FileLetterCounter {
     @Override
     public Map<Character, Long> count(File input) {
         ExecutorService counterWorkers = Executors.newFixedThreadPool(COUNTERS_NUMBER);
-        ICounter counter = counterCreator.counter(COUNTERS_NUMBER);
+        ICounter counter = counterCreator.counter();
         try (IFileBatchReader fileReader = readerFactory.reader(input, SYMBOL_NUMBER, DEFAULT_FILE_CHARSET)) {
             //будет складывать суммы по отдельным кускам файла в отдельном потоке
             IMergeRunner merger = mergerCreator.mergerRunner(counter);
             merger.start();
             String largeString;
             while ((largeString = fileReader.readBatch()) != null) {
-                List<Runnable> tasks = counter.createTasks(largeString);
-                tasks.forEach(counterWorkers::execute);
+                counterWorkers.execute(counter.createTask(largeString));
             }
             //дожидаемся пока counter точно посчитает все отдельные куски
             counterWorkers.shutdown();
