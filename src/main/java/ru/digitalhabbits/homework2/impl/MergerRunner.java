@@ -23,9 +23,7 @@ public class MergerRunner extends Thread implements IMergeRunner {
         try {
             Map<Character, Long> finalCount = new HashMap<>();
             Map<Character, Long> singleCountResult;
-            /**
-             * берем, пока не натыкаемся на терминальный null
-             */
+            //берем, пока не натыкаемся на терминальный null
             while ((singleCountResult = counter.take()) != null) {
                 finalCount = merge(finalCount, singleCountResult);
             }
@@ -35,7 +33,6 @@ public class MergerRunner extends Thread implements IMergeRunner {
         }
     }
 
-    @Override
     public Map<Character, Long> merge(Map<Character, Long> first, Map<Character, Long> second) {
         return Stream.concat(first.entrySet().stream(), second.entrySet().stream())
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, Long::sum));

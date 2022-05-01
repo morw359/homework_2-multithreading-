@@ -10,11 +10,11 @@ import static org.assertj.core.api.Assertions.entry;
 
 public class CounterTest {
     @Test
-    void checkCountSymbols() throws InterruptedException {
-        {
+    void checkCountSymbols() throws Exception {
+        try (Counter counter = new Counter()) {
             String s = "asdfaglasg";
-            Counter counter = new Counter();
-            counter.createTask(s).run();
+            counter.count(s);
+            counter.endCountProcess();
             Map<Character, Long> res = counter.take();//hm...
             assertThat(res).containsOnly(
                     entry('a', 3L),
@@ -25,9 +25,8 @@ public class CounterTest {
                     entry('l', 1L)
             );
         }
-        {
+        try (Counter counter = new Counter()) {
             String s2 = "0a;\n\n\n;b;c";
-            Counter counter = new Counter();
             counter.createTask(s2).run();
             Map<Character, Long> res = counter.take();
             assertThat(res).containsOnly(
@@ -39,12 +38,13 @@ public class CounterTest {
     }
 
     @Test
-    void checkQueue() throws InterruptedException {
-        Counter counter = new Counter();
-        counter.createTask("abbccdd").run();
-        Map<Character, Long> res = counter.take();//hm...
-        assertThat(res != null).isTrue();
-        counter.end();
-        assertThat(counter.take() == null).isTrue();
+    void checkQueue() throws Exception {
+        try (Counter counter = new Counter()) {
+            counter.count("abbccdd");
+            counter.endCountProcess();
+            Map<Character, Long> res = counter.take();//hm... todo ask
+            assertThat(res != null).isTrue();
+            assertThat(counter.take() == null).isTrue();
+        }
     }
 }

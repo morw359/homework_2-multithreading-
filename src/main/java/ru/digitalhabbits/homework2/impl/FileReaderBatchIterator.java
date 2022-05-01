@@ -35,9 +35,7 @@ public class FileReaderBatchIterator implements IFileBatchReader {
             if (read < 1) return null;
             return new String(buffer, 0, read);
         } catch (IOException e) {
-            System.out.println("file reading error: " + ExceptionUtils.getStackTrace(e));
-            System.exit(1);
-            return "";
+            throw new RuntimeException(e);
         }
     }
 

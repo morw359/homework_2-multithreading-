@@ -19,9 +19,9 @@ public class E2ETests {
         var file = getFile("test.txt");
         var counter = new AsyncFileLetterCounter();
 
-        long time = Instant.now().toEpochMilli();
+        long time = System.currentTimeMillis();
         Map<Character, Long> count = counter.count(file);
-        time = Instant.now().toEpochMilli() - time;
+        time = System.currentTimeMillis() - time;
         System.out.println("async " + time + " ms.");
 
         assertThat(count).containsOnly(
