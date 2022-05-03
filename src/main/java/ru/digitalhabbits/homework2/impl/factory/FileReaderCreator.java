@@ -4,11 +4,11 @@ import ru.digitalhabbits.homework2.IFileBatchReader;
 import ru.digitalhabbits.homework2.impl.FileReaderBatchIterator;
 
 import java.io.File;
-import java.nio.charset.Charset;
+import java.io.IOException;
 
 public class FileReaderCreator {
 
-    public IFileBatchReader reader(File file, int batchSize, Charset charset) {
-        return new FileReaderBatchIterator(file, batchSize, charset);
+    public static IFileBatchReader reader(File file, int batchSize) throws IOException {
+        return new FileReaderBatchIterator(file, batchSize);
     }
 }

@@ -4,23 +4,22 @@ import org.junit.jupiter.api.Test;
 import ru.digitalhabbits.homework2.impl.FileReaderBatchIterator;
 
 import java.io.File;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
+import java.io.IOException;
 
 import static com.google.common.io.Resources.getResource;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class FileReaderTest {
-    private final static Charset utf8 = StandardCharsets.UTF_8;
 
     @Test
-    void testReadWithDifferentBufferSizes() {
+    void testReadWithDifferentBufferSizes() throws IOException {
         File file = getFile("testFileReader1.txt");
-        try (FileReaderBatchIterator reader = new FileReaderBatchIterator(file, 1, utf8)) {
+        try (FileReaderBatchIterator reader = new FileReaderBatchIterator(file, 1)) {
             String charLine;
             StringBuilder res = new StringBuilder();
-            while ((charLine = reader.readBatch()) != null) {
+            while (reader.next()) {
+                charLine = reader.readBatch();
                 assertEquals(1, charLine.length());
                 res.append(charLine);
             }
@@ -30,10 +29,11 @@ public class FileReaderTest {
             assertTrue(finalRead.contains("fdbdefbececbcbca"));
         }
 
-        try (FileReaderBatchIterator reader = new FileReaderBatchIterator(file, 200, utf8)) {
+        try (FileReaderBatchIterator reader = new FileReaderBatchIterator(file, 200)) {
             String charLine;
             StringBuilder res = new StringBuilder();
-            while ((charLine = reader.readBatch()) != null) {
+            while (reader.next()) {
+                charLine = reader.readBatch();
                 res.append(charLine);
             }
             String finalRead = res.toString();

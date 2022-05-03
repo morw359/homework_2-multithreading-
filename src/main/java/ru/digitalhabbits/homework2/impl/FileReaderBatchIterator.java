@@ -7,36 +7,32 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 public class FileReaderBatchIterator implements IFileBatchReader {
-    private final File file;
-    private final int batchSize;
     private BufferedReader reader;
-    private final Charset charset;
     private final char[] buffer;
+    private int read;
 
     /**
      * @param batchSize - количество символов читаемых за раз
      */
-    public FileReaderBatchIterator(File file, int batchSize, Charset charset) {
-        this.file = file;
-        this.batchSize = batchSize;
-        this.charset = charset;
+    public FileReaderBatchIterator(File file, int batchSize) throws IOException {
         this.buffer = new char[batchSize];
+        this.reader = new BufferedReader(new FileReader(file, StandardCharsets.UTF_8), batchSize);
     }
 
-    public String readBatch() {
+    public boolean next() {
         try {
-            if (reader == null) {
-                reader = new BufferedReader(new FileReader(file, charset), batchSize);
-            }
-            int read = reader.read(buffer);
-            if (read < 1) return null;
-            return new String(buffer, 0, read);
+            this.read = reader.read(buffer);
+            return read >= 1;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public String readBatch() {
+        return new String(buffer, 0, read);
     }
 
     public void close() {
